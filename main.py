@@ -78,6 +78,23 @@ def send_photo(image_path: str) -> bool:
 
 
 # =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+def make_spread_name(near_symbol: str, far_symbol: str) -> str:
+    """
+    Build a compact spread name like 'S50G26H26'
+    from symbols like 'S50G2026' and 'S50H2026'.
+    Format: <product><near_month><near_YY><far_month><far_YY>
+    """
+    product = near_symbol[:3]          # 'S50'
+    near_month = near_symbol[3]        # 'G'
+    near_yy = near_symbol[-2:]         # '26'
+    far_month = far_symbol[3]          # 'H'
+    far_yy = far_symbol[-2:]           # '26'
+    return f"{product}{near_month}{near_yy}{far_month}{far_yy}"
+
+
+# =============================================================================
 # DATA LOADING
 # =============================================================================
 def load_data(symbol: str, timeframe: str = TIMEFRAME) -> pd.DataFrame:
@@ -119,7 +136,7 @@ class CalendarSpreadAnalyzer:
         self.far_expiry = far_expiry
         self.near_label = near_label
         self.far_label = far_label
-        self.spread_name = f"{near_symbol[-4:]}{far_symbol[-4:]}"
+        self.spread_name = make_spread_name(near_symbol, far_symbol)
         
     def load_and_calculate(self) -> pd.DataFrame:
         """Load data and calculate spread metrics"""
